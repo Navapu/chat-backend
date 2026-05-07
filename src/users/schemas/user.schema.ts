@@ -11,7 +11,7 @@ export class User extends Document {
   @Prop({ unique: true, required: true, trim: true })
   email!: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, select: false })
   password!: string;
 
   @Prop({ required: true, trim: true, unique: true })
