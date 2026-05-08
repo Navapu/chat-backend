@@ -5,17 +5,29 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Request } from 'express';
+
+interface RequestWithUser extends Request {
+  user: {
+    userId: string;
+    email: string;
+  };
+}
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Get()
-  async getAllUsers() {
-    return this.usersService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getMyProfile(@Req() req: RequestWithUser) {
+    return req.user;
   }
 
   @Post('register')
